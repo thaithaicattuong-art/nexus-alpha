@@ -70,7 +70,8 @@ opened_at, closed_at, symbol, side, entry_price, exit_price, size, pnl
 ```
 
 ## Deploy on Streamlit Cloud
-
+https://share.streamlit.io/
+https://nexusalpha.streamlit.app/
 1. Push this repository to GitHub.
 2. Create a Streamlit app using `app.py` as the main file.
 3. Add the environment variables in **App settings → Secrets** using TOML.
