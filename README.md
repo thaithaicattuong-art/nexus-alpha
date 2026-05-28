@@ -1,6 +1,6 @@
-# Nexus Alpha Lab v3.1 API
+# Nexus Alpha
 
-Crypto/ETF research and paper-trading lab using **SoSoValue** + **SoDEX** as primary connectors.
+
 
 ## What is inside
 
