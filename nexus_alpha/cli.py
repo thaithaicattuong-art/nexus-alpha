@@ -16,8 +16,8 @@ from .signals import generate_signals
 
 def main() -> None:
     load_dotenv()
-    parser = argparse.ArgumentParser(description="Nexus Alpha Lab v3 CLI")
-    parser.add_argument("--asset", default="ALL", help="BTC, ETH, SOL, XRP hoặc ALL")
+    parser = argparse.ArgumentParser(description="Nexus Alpha CLI")
+    parser.add_argument("--asset", default="ALL", help="BTC, ETH, SOL, XRP, or ALL")
     parser.add_argument("--capital", type=float, default=float(os.getenv("DEFAULT_CAPITAL", 10000)))
     parser.add_argument("--risk", type=float, default=float(os.getenv("RISK_PER_TRADE", 0.01)))
     parser.add_argument("--thesis", default="AI infrastructure and bluechip crypto with ETF flow confirmation")

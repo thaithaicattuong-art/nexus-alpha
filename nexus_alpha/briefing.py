@@ -13,20 +13,20 @@ def generate_brief(signals: list[TradeSignal], risks: dict[str, RiskDecision], c
     alloc = suggested_allocations(signals, risks, capital)
 
     if allowed:
-        mode = "có thể giao dịch chọn lọc"
+        mode = "selective risk-on"
         action_line = ", ".join(f"{s.asset} {s.action}" for s in allowed[:3])
     else:
-        mode = "phòng thủ / đứng ngoài"
-        action_line = "không có lệnh nào vượt qua risk filter"
+        mode = "defensive / stay flat"
+        action_line = "no setup passed the risk filter"
 
     lines = [
-        f"Daily Brief: Market mode hiện tại là **{mode}**. Tín hiệu mạnh nhất là {top.asset} với bias {top.action}, confidence {top.confidence:.0%}, score {top.score:+.2f}.",
-        f"Action plan: {action_line}. Không vào full size; dùng position sizing theo SL và giới hạn rủi ro mỗi lệnh.",
+        f"Daily Brief: Current market mode is **{mode}**. The strongest signal is {top.asset} with {top.action} bias, {top.confidence:.0%} confidence, and score {top.score:+.2f}.",
+        f"Action plan: {action_line}. Avoid full-size entries; use stop-loss based position sizing and a fixed risk budget per trade.",
     ]
     if blocked:
         lines.append("Risk notes: " + " | ".join(f"{s.asset}: {risks[s.asset].notes[0]}" for s in blocked[:3]))
     active_alloc = alloc[alloc["position_usd"] > 0]
     if not active_alloc.empty:
-        lines.append("Suggested allocation: " + ", ".join(f"{r.asset} {r.allocation_pct:.1f}% vốn" for r in active_alloc.itertuples()))
-    lines.append("Rule: nếu giá chạm SL hoặc sentiment đảo chiều mạnh, đóng lệnh thay vì trung bình giá.")
+        lines.append("Suggested allocation: " + ", ".join(f"{r.asset} {r.allocation_pct:.1f}% of capital" for r in active_alloc.itertuples()))
+    lines.append("Rule: if price hits the stop or sentiment sharply reverses, close the setup instead of averaging down.")
     return "\n\n".join(lines)

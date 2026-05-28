@@ -90,10 +90,10 @@ def run_monte_carlo(basket: Basket, horizon_days: int = 30, paths: int = 1000) -
 
 
 SCENARIOS = [
-    {"id":"covid", "name":"COVID crash 2020", "blurb":"Liquidity shock: correlation tăng mạnh, risk assets giảm đồng loạt.", "shock":-0.32, "vol_mult":1.6, "days":45},
-    {"id":"ftx", "name":"FTX collapse 2022", "blurb":"Counterparty shock: low-cap, meme và high beta chịu tác động lớn.", "shock":-0.24, "vol_mult":1.35, "days":68},
-    {"id":"eth_etf", "name":"ETH ETF launch 2024", "blurb":"Risk-on rotation: ETH ecosystem/L2/AI outperform nhưng vẫn biến động.", "shock":0.16, "vol_mult":1.15, "days":70},
-    {"id":"flow_reversal", "name":"ETF flow reversal", "blurb":"Dòng tiền ETF đảo chiều 7 ngày, agent giảm beta và tăng cash.", "shock":-0.12, "vol_mult":1.1, "days":21},
+    {"id":"covid", "name":"COVID crash 2020", "blurb":"Liquidity shock: correlations rise sharply and risk assets sell off together.", "shock":-0.32, "vol_mult":1.6, "days":45},
+    {"id":"ftx", "name":"FTX collapse 2022", "blurb":"Counterparty shock: low-cap, meme, and high-beta assets are hit hardest.", "shock":-0.24, "vol_mult":1.35, "days":68},
+    {"id":"eth_etf", "name":"ETH ETF launch 2024", "blurb":"Risk-on rotation: ETH ecosystem, L2, and AI assets outperform but remain volatile.", "shock":0.16, "vol_mult":1.15, "days":70},
+    {"id":"flow_reversal", "name":"ETF flow reversal", "blurb":"ETF flows reverse over 7 days; the agent cuts beta and raises cash.", "shock":-0.12, "vol_mult":1.1, "days":21},
 ]
 
 
@@ -183,10 +183,10 @@ def paper_log_basket(basket: Basket, note: str = "paper basket created") -> dict
 
 def agent_steps_for_basket(basket: Basket) -> list[dict]:
     return [
-        {"stage":"Observe", "message":"Đọc thesis, demo market metrics, sentiment, liquidity và volatility.", "status":"done"},
+        {"stage":"Observe", "message":"Read thesis, market metrics, sentiment, liquidity, and volatility.", "status":"done"},
         {"stage":"Reason", "message":basket.reasoning.replace("\n", " "), "status":"done"},
-        {"stage":"Propose", "message":f"Đề xuất {len(basket.constituents)} assets, risk score {basket.risk_score}/100, expected vol {basket.expected_annual_vol:.2f}.", "status":"done"},
-        {"stage":"Confirm", "message":"Không đặt lệnh thật. Mọi execution đều là preview/paper, cần xác nhận thủ công nếu nối broker/SoDEX sau.", "status":"safe"},
+        {"stage":"Propose", "message":f"Propose {len(basket.constituents)} assets with risk score {basket.risk_score}/100, expected vol {basket.expected_annual_vol:.2f}.", "status":"done"},
+        {"stage":"Confirm", "message":"No live orders are sent. Every execution is preview/paper only and requires manual confirmation if a broker/SoDEX adapter is connected later.", "status":"safe"},
     ]
 
 

@@ -90,7 +90,7 @@ def classify_thesis(thesis: str, risk_profile: str = "balanced") -> tuple[list[t
             notes.append(f"{theme}: matched {', '.join(matched[:4])}")
     if not hits:
         hits = [("defi-bluechip", 1)]
-        notes.append("Không thấy keyword rõ, mặc định dùng lõi blue-chip/defi.")
+        notes.append("No clear theme keyword was found, so the basket defaults to the blue-chip/DeFi core.")
     weights = _softmax([h[1] for h in hits], temp=2.0)
     return [(theme, float(w)) for (theme, _), w in zip(hits, weights)], notes
 
@@ -125,15 +125,15 @@ def build_basket(thesis: str, amount_usd: float = 10_000, risk_profile: str = "b
     weights = _cap_weights(raw, cap)
     cons = []
     for (t, score), w in zip(rows, weights):
-        rationales = [f"theme fit với thesis", f"momentum 30d {t['momentum30d']:+.1%}", f"sentiment {t['sentiment']:.2f}", f"liquidity {t['liquidity']:.2f}"]
+        rationales = [f"theme fit with thesis", f"momentum 30d {t['momentum30d']:+.1%}", f"sentiment {t['sentiment']:.2f}", f"liquidity {t['liquidity']:.2f}"]
         cons.append(BasketConstituent(str(t["symbol"]), str(t["name"]), round(float(w), 4), round(score, 3), " • ".join(rationales)))
     exp_vol = sum(c.weight * float(TOKEN_UNIVERSE.loc[TOKEN_UNIVERSE.symbol == c.symbol, "volatility"].iloc[0]) for c in cons)
     concentration = sum(c.weight ** 2 for c in cons)
     risk_score = int(min(100, round(exp_vol * 62 + concentration * 55)))
     bid = hashlib.sha1(f"{thesis}-{datetime.now(timezone.utc).isoformat()}".encode()).hexdigest()[:10]
     reasoning = "\n".join([
-        "Thesis được tách thành: " + ", ".join(f"{theme} {w:.0%}" for theme, w in theme_weights),
-        "Chọn token theo theme fit + momentum + sentiment + liquidity, sau đó giới hạn concentration cap.",
+        "Thesis was decomposed into: " + ", ".join(f"{theme} {w:.0%}" for theme, w in theme_weights),
+        "Tokens are selected by theme fit, momentum, sentiment, and liquidity, then constrained by concentration caps.",
         "Notes: " + " | ".join(notes),
     ])
     return Basket(bid, thesis, risk_profile, float(amount_usd), risk_score, round(exp_vol, 3), cons, reasoning, datetime.now(timezone.utc).isoformat(timespec="seconds"))

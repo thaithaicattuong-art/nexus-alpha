@@ -32,11 +32,11 @@ def score_snapshot(s: AssetSnapshot) -> tuple[float, list[str]]:
     score = 0.42 * np.tanh(flow_strength) + 0.25 * price_score + 0.23 * sentiment_score + 0.10 * volume_score
 
     if flow_delta > 0:
-        reasons.append(f"ETF flow 7 ngày cải thiện {flow_delta:,.1f}M USD so với 7 ngày trước.")
+        reasons.append(f"7-day ETF flow improved by {flow_delta:,.1f}M USD versus the previous 7-day window.")
     else:
-        reasons.append(f"ETF flow 7 ngày yếu hơn {abs(flow_delta):,.1f}M USD so với 7 ngày trước.")
-    reasons.append(f"Giá 24h biến động {s.change_24h:+.2f}% và sentiment hiện ở {s.sentiment:.1f}/100.")
-    reasons.append(f"Volume ratio {s.volume_ratio:.2f}x cho biết mức độ chú ý hiện tại của thị trường.")
+        reasons.append(f"7-day ETF flow weakened by {abs(flow_delta):,.1f}M USD versus the previous 7-day window.")
+    reasons.append(f"24h price change is {s.change_24h:+.2f}% and current sentiment is {s.sentiment:.1f}/100.")
+    reasons.append(f"Volume ratio is {s.volume_ratio:.2f}x, indicating current market attention.")
     return float(score), reasons
 
 
@@ -52,7 +52,6 @@ def generate_signal(df: pd.DataFrame) -> TradeSignal:
     else:
         action = "HOLD"
 
-    # SL/TP expands with realized annualized volatility but stays usable.
     vol_band = min(max(s.volatility / 100 / 8, 0.018), 0.075)
     if action == "SELL":
         stop = s.price * (1 + vol_band)
@@ -62,9 +61,9 @@ def generate_signal(df: pd.DataFrame) -> TradeSignal:
         take = s.price * (1 + vol_band * 1.8)
 
     thesis = (
-        f"{s.asset}: {action} bias với confidence {confidence:.0%}. "
-        f"Động lực chính đến từ flow 7 ngày, momentum giá và sentiment; "
-        f"chỉ nên vào lệnh nếu risk filter không chặn."
+        f"{s.asset}: {action} bias with {confidence:.0%} confidence. "
+        "The main drivers are 7-day flow momentum, price momentum, and sentiment. "
+        "Enter only when the risk filter allows the setup."
     )
     return TradeSignal(
         asset=s.asset,

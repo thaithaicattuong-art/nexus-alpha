@@ -33,7 +33,7 @@ def demo_trades(n: int = 160) -> pd.DataFrame:
 def normalize_trades(df: pd.DataFrame) -> pd.DataFrame:
     missing = [c for c in REQUIRED_COLS if c not in df.columns]
     if missing:
-        raise ValueError(f"Thiếu cột bắt buộc: {', '.join(missing)}")
+        raise ValueError(f"Missing required columns: {', '.join(missing)}")
     out = df.copy()
     out["opened_at"] = pd.to_datetime(out["opened_at"], utc=True, errors="coerce")
     out["closed_at"] = pd.to_datetime(out["closed_at"], utc=True, errors="coerce")
@@ -75,6 +75,6 @@ def find_edge_notes(df: pd.DataFrame) -> list[str]:
         if not s.empty:
             best = s.iloc[0]
             worst = s.iloc[-1]
-            notes.append(f"Best {dim}: {best[dim]} với PnL {best['pnl']:,.2f} và winrate {best['winrate']}%.")
-            notes.append(f"Worst {dim}: {worst[dim]} với PnL {worst['pnl']:,.2f} và winrate {worst['winrate']}%.")
+            notes.append(f"Best {dim}: {best[dim]} with PnL {best['pnl']:,.2f} and winrate {best['winrate']}%.")
+            notes.append(f"Worst {dim}: {worst[dim]} with PnL {worst['pnl']:,.2f} and winrate {worst['winrate']}%.")
     return notes[:6]

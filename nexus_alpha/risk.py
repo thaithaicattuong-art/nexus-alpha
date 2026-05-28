@@ -24,18 +24,18 @@ def evaluate_risk(signal: TradeSignal, series: pd.DataFrame, capital: float = 10
 
     if signal.action == "HOLD":
         allowed = False
-        notes.append("Tín hiệu HOLD nên đứng ngoài, không mở vị thế mới.")
+        notes.append("HOLD signal: stay flat and wait for a cleaner setup.")
     if signal.confidence < 0.48:
         allowed = False
-        notes.append("Confidence thấp hơn ngưỡng 48%.")
+        notes.append("Confidence is below the 48% execution threshold.")
     if s.volatility > 95:
         allowed = False
-        notes.append(f"Volatility quá cao: {s.volatility:.1f}% annualized.")
+        notes.append(f"Volatility is too high: {s.volatility:.1f}% annualized.")
     if s.sentiment < 22 and signal.action == "BUY":
         allowed = False
-        notes.append("FUD/panic filter: sentiment quá thấp nên không bắt đáy.")
+        notes.append("Panic filter: sentiment is too low for bottom-fishing.")
     if s.volume_ratio > 2.25:
-        notes.append("Volume spike mạnh: giảm size để tránh đuổi giá.")
+        notes.append("Strong volume spike: size is reduced to avoid chasing price.")
 
     risk_dollars = capital * risk_per_trade
     distance = abs(signal.entry - signal.stop_loss) / max(signal.entry, 1e-9)
@@ -48,6 +48,6 @@ def evaluate_risk(signal: TradeSignal, series: pd.DataFrame, capital: float = 10
         position = 0
 
     if not notes:
-        notes.append("Risk filter cho phép, nhưng vẫn giới hạn size theo SL và vốn.")
+        notes.append("Risk filter passed; size is still capped by stop distance and available capital.")
     risk_level = "LOW" if allowed and s.volatility < 45 else "MEDIUM" if allowed else "BLOCKED"
     return RiskDecision(allowed=allowed, risk_level=risk_level, position_usd=round(position, 2), max_loss_usd=round(risk_dollars, 2), notes=notes)
