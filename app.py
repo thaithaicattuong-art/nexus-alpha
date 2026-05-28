@@ -56,7 +56,7 @@ st.markdown(
 
 st.title("⚡ Nexus Alpha")
 st.caption("SoSoValue + SoDEX data → market intelligence → flow signals → thesis baskets → risk lab → execution preview")
-st.info("Educational / paper trading only. Live trading is OFF by default; all executions are preview only.", icon="🛡️")
+st.info("Educational / paper trading only.", icon="🛡️")
 
 with st.sidebar:
     st.header("Settings")
